@@ -1,0 +1,11 @@
+{
+  "name": "journey-circles",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Journey Circles landing page — a program of Automate Your Journey",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
