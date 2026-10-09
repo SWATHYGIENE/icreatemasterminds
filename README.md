@@ -1,6 +1,6 @@
-# Journey Circles
+# iCreateMasterminds
 
-Landing page for **Journey Circles**, a program of Automate Your Journey: local groups of 6–10 non-competing business owners led by a certified circle leader. Static HTML/CSS/JS plus one Vercel serverless function that sends applications to GoHighLevel.
+Landing page for **iCreateMasterminds** (icreatemasterminds.com), a program of Automate Your Journey. Leaders run **Journey Circles**: local groups of 6–10 non-competing business owners led by a certified circle leader. Static HTML/CSS/JS plus one Vercel serverless function that sends applications to GoHighLevel.
 
 ```
 index.html        Landing page
@@ -17,7 +17,7 @@ vercel.json       Clean URLs + security headers
 
 1. Create a GitHub repo and push this folder:
    ```bash
-   git remote add origin git@github.com:<you>/journey-circles.git
+   git remote add origin git@github.com:SWATHYGIENE/icreatemasterminds.git
    git push -u origin main
    ```
 2. In Vercel: **Add New → Project → Import** the repo. Framework preset: **Other**. No build command, no output directory.
@@ -37,11 +37,11 @@ vercel.json       Clean URLs + security headers
 | `goals` | Free text |
 | `sms_consent`, `consent_timestamp`, `consent_ip`, `page` | Keep these for your TCPA consent record |
 | `utm_*`, `ref` | Pulled from the page URL |
-| `tags` | `journey-circles`, `jc-leader-applicant` or `jc-member-applicant`, `swat-network-member` |
+| `tags` | `icreatemasterminds`, `jc-leader-applicant` or `jc-member-applicant`, `swat-network-member` |
 
 ## Before launch
 
-- [ ] Confirm the program name and buy the domain
+- [ ] Point icreatemasterminds.com at Vercel (Dynadot DNS)
 - [ ] Confirm the time commitment, circle size and meeting format in the **How a circle runs** and **straight answers** sections match the real program
 - [ ] Adjust the calculator defaults/ranges in `index.html` (`#members`, `#dues`)
 - [ ] Replace the `MC` placeholder with a photo in `assets/` (see comment in the founder section)

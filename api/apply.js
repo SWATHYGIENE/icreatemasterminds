@@ -50,9 +50,9 @@ export default async function handler(req, res) {
     utm_campaign: clean(body.utm_campaign || "", 100),
     utm_content: clean(body.utm_content || "", 100),
     ref: clean(body.ref || "", 100),
-    tags: ["journey-circles", body.role === "leader" ? "jc-leader-applicant" : "jc-member-applicant"]
+    tags: ["icreatemasterminds", body.role === "leader" ? "jc-leader-applicant" : "jc-member-applicant"]
       .concat(body.swatMember === true ? ["swat-network-member"] : []),
-    source: "Journey Circles landing page",
+    source: "iCreateMasterminds landing page",
   };
 
   const url = process.env.GHL_WEBHOOK_URL;

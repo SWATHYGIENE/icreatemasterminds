@@ -1,4 +1,4 @@
-// Journey Circles — page behavior
+// iCreateMasterminds — page behavior
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
