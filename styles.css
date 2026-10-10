@@ -221,3 +221,14 @@ p { margin: 0 0 1em; max-width: 66ch; }
 .legal { padding: var(--section) 0; }
 .legal h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); }
 .legal h2 { font-size: 1.6rem; margin-top: 2rem; }
+
+/* Shared category collaboration directory. */
+.connections { padding: 88px 0; background: #edf2e5; border-block: 1px solid #d5dfce; }
+.connections h2 { max-width: 800px; }
+.connections__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 36px 0; }
+.connections__grid article { padding: 24px; border: 1px solid #cfdbca; border-radius: 12px; background: #fff; }
+.connections__grid h3 { margin-top: 16px; }
+.connections__number { font-weight: 800; color: #466a52; font-size: .8rem; letter-spacing: .12em; }
+.connections__grid a { color: #245b48; font-weight: 650; }
+.connections__note { font-size: .85rem; max-width: 760px; margin-top: 24px; }
+@media (max-width: 760px) { .connections { padding: 56px 0; } .connections__grid { grid-template-columns: 1fr; } }

@@ -52,3 +52,13 @@ vercel.json       Clean URLs + security headers
 ## Local preview
 
 `npx vercel dev` runs the page and the API together. For the page only, `npx serve .`
+
+## Connected categories and collaboration circles
+
+The new `/circles` workspace is served on this domain through an explicit Vercel rewrite to Agrarian Exchange. Both sites use the same canonical category IDs, parent hierarchy and moderation state. This provides immediate two-way visibility without duplicate category stores or synchronization jobs.
+
+Members can register or sign in using their existing shared Agrarian account, join individual category circles, post, reply, report content and suggest categories/subcategories. Browser sessions are scoped separately to each domain. No account credentials or database secrets are stored in this repository. Category participation does not create a trading profile, credit ledger or paid Journey Circle enrollment.
+
+The shared implementation and database migrations live in `SWATHYGIENE/agrarianexchange`, under `lib/circles.ts`, `lib/circle-pages.ts`, `lib/circle-actions.ts`, and `app/circles/[[...path]]/route.ts`. Deploy that project before this site when changing routes. See its `docs/connected-circles.md` for verification and operational details.
+
+All circle responses, including proxied responses, are private/no-store. The origin checks production domain origins on every POST. Never cache the circle workspace or rewrite unrelated Agrarian pages. Circle availability depends on the Agrarian service; the marketing page and application endpoint remain independent.
