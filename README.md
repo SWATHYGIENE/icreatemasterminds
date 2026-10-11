@@ -62,3 +62,9 @@ Members can register or sign in using their existing shared Agrarian account, jo
 The shared implementation and database migrations live in `SWATHYGIENE/agrarianexchange`, under `lib/circles.ts`, `lib/circle-pages.ts`, `lib/circle-actions.ts`, and `app/circles/[[...path]]/route.ts`. Deploy that project before this site when changing routes. See its `docs/connected-circles.md` for verification and operational details.
 
 All circle responses, including proxied responses, are private/no-store. The origin checks production domain origins on every POST. Never cache the circle workspace or rewrite unrelated Agrarian pages. Circle availability depends on the Agrarian service; the marketing page and application endpoint remain independent.
+
+## Circle video meetings
+
+The shared circle backend now includes `/circles/meetings?circle=<category-id>` for scheduled video meetings, recording consent, private video archives and host notes. Hosts can use an existing Zoom/Meet/Teams/Webex/Whereby meeting link and upload the MP4/WebM recording afterward. Built-in Daily calls and automatic cloud-recording reconciliation require `DAILY_API_KEY` on Agrarian Exchange plus a recording-enabled Daily account; no video-provider credentials are currently stored in this project. Meeting archives belong to individual category circles, with membership checks on playback. Current and future members of the same circle can access published recordings. See the Agrarian repository's `docs/connected-circles.md` for limits, activation and verification.
+
+Every circle also has a private document library and named breakout rooms. Breakouts contain separate discussion streams, files, meetings and recordings, inheriting circle membership. They do not establish a separate confidential audience. Document limits are 25 MB/file and 500 MB/circle including breakouts. Details and upload validation live in the shared backend.

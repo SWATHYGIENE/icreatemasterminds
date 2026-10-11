@@ -16,10 +16,6 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
     },
@@ -46,6 +42,19 @@
         {
           "key": "Vercel-CDN-Cache-Control",
           "value": "no-store"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self \"https://*.daily.co\"), microphone=(self \"https://*.daily.co\"), display-capture=(self \"https://*.daily.co\"), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/((?!circles(?:/|$)).*)",
+      "headers": [
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
     }
