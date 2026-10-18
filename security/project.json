@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "project": "icreatemasterminds",
+  "projectId": "prj_BRWB7czyMjC0hihLST3yuodBMmrC",
+  "scope": "swat12",
+  "repository": "SWATHYGIENE/icreatemasterminds",
+  "productionBranch": "main",
+  "productionApproval": false,
+  "capabilities": {
+    "publicForms": true,
+    "accounts": false,
+    "administration": false,
+    "financial": false
+  },
+  "identityAdapter": "no local user accounts; public application endpoint; circles reverse proxy",
+  "stagingStatus": "not-deployed-by-this-initiative",
+  "runtimeIntegration": "not-installed",
+  "sourceRevision": "7475c690ac24a33cb093f705bf23908dc792aba9"
+}

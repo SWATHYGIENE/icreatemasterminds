@@ -1,0 +1,33 @@
+name: Security baseline
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * 1'
+permissions:
+  contents: read
+jobs:
+  isolated-policy-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test security/universal/policy.test.mjs
+      - run: node security/universal/check.mjs > security-posture.json
+      - name: Project-specific security tests
+        run: |
+          if [ -f security/config.test.mjs ]; then node --test security/config.test.mjs; fi
+          if [ -f security/gate.test.mjs ]; then node --test security/gate.test.mjs; fi
+          if [ -f tests/application-security.test.mjs ]; then node --test tests/application-security.test.mjs; fi
+      - name: Review dependency advisories without installing application code
+        run: |
+          if [ -f package-lock.json ]; then
+            npm audit --package-lock-only --omit=dev --audit-level=high
+          elif [ -f pnpm-lock.yaml ]; then
+            npx --yes pnpm@11.25.0 audit --prod --audit-level=high
+          fi
