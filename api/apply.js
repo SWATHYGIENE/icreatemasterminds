@@ -8,6 +8,8 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const clean = (v, max = 500) => (typeof v === "string" ? v.trim().slice(0, max) : v);
 
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "private, no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Use POST." });
@@ -17,7 +19,12 @@ export default async function handler(req, res) {
   if (typeof body === "string") {
     try { body = JSON.parse(body); } catch { return res.status(400).json({ error: "The form data couldn't be read." }); }
   }
-  body = body || {};
+  if (!body || typeof body !== "object" || Array.isArray(body)) return res.status(400).json({error:"Invalid application."});
+  if (Buffer.byteLength(JSON.stringify(body)) > 16000) return res.status(413).json({error:"Application too large."});
+  const allowed=new Set([...REQUIRED,"website","smsConsent","swatMember","goals","page","utm_source","utm_medium","utm_campaign","utm_content","ref"]);
+  if(Object.keys(body).some(k=>!allowed.has(k)))return res.status(400).json({error:"Unknown application field."});
+  if(Object.entries(body).some(([k,v])=>!["smsConsent","swatMember"].includes(k)&&typeof v!=="string"))return res.status(400).json({error:"Invalid application field."});
+  if(Object.entries(body).some(([k,v])=>["smsConsent","swatMember"].includes(k)&&typeof v!=="boolean"))return res.status(400).json({error:"Invalid consent field."});
 
   // Honeypot: bots fill the hidden "website" field. Pretend success.
   if (body.website) return res.status(200).json({ ok: true });
@@ -61,19 +68,24 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Applications aren't connected yet." });
   }
 
+  let destination;
+  try { destination=new URL(url); if(destination.protocol!=="https:"||destination.username||destination.password)throw Error(); }
+  catch { return res.status(503).json({error:"Applications are temporarily unavailable."}); }
   try {
-    const r = await fetch(url, {
+    const r = await fetch(destination.href, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000),
+      redirect: "error",
     });
     if (!r.ok) {
-      console.error("GHL webhook responded", r.status, await r.text().catch(() => ""));
+      console.error("Application delivery rejected");
       return res.status(502).json({ error: "The application didn't go through." });
     }
     return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error("GHL webhook failed", err);
+  } catch {
+    console.error("Application delivery unavailable");
     return res.status(502).json({ error: "The application didn't go through." });
   }
 }

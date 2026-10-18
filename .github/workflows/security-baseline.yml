@@ -1,0 +1,60 @@
+name: Security baseline
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * 1'
+permissions:
+  contents: read
+jobs:
+  isolated-policy-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: node --test security/universal/policy.test.mjs security/universal/secret-scan.test.mjs
+      - run: node security/universal/secret-scan.mjs
+      - run: node security/universal/check.mjs > security-posture.json
+      - name: Project-specific security tests
+        run: |
+          if [ -f security/config.test.mjs ]; then node --test security/config.test.mjs; fi
+          if [ -f security/gate.test.mjs ]; then node --test security/gate.test.mjs; fi
+          if [ -f tests/application-security.test.mjs ]; then node --test tests/application-security.test.mjs; fi
+      - name: Review dependency advisories without installing application code
+        run: |
+          if [ -f package-lock.json ]; then
+            npm audit --package-lock-only --omit=dev --audit-level=high
+          elif [ -f pnpm-lock.yaml ]; then
+            npx --yes pnpm@11.25.0 audit --prod --audit-level=high
+          fi
+
+  application-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install locked application dependencies without application secrets
+        run: |
+          if [ -f pnpm-lock.yaml ] && [ ! -f package-lock.json ]; then
+            npx --yes pnpm@11.25.0 install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          fi
+      - name: Execute project-specific isolated tests
+        run: |
+          node --test tests/application-security.test.mjs

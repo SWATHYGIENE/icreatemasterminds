@@ -1,0 +1,2 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{credentialKinds}from'./secret-scan.mjs';
+test('detect known credential formats without returning their values',()=>{const inputs=['-----BEGIN '+'PRIVATE KEY-----','ghp_'+'a'.repeat(36),'AKIA'+'A'.repeat(16),'sk_live_'+'a'.repeat(30)];for(const input of inputs){const r=credentialKinds(input);assert.equal(r.length,1);assert.ok(!JSON.stringify(r).includes(input));}assert.deepEqual(credentialKinds('process.env.API_KEY'),[]);});
