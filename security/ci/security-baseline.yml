@@ -17,7 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: node --test security/universal/policy.test.mjs
+      - run: node --test security/universal/policy.test.mjs security/universal/secret-scan.test.mjs
+      - run: node security/universal/secret-scan.mjs
       - run: node security/universal/check.mjs > security-posture.json
       - name: Project-specific security tests
         run: |
@@ -31,3 +32,29 @@ jobs:
           elif [ -f pnpm-lock.yaml ]; then
             npx --yes pnpm@11.25.0 audit --prod --audit-level=high
           fi
+
+  application-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install locked application dependencies without application secrets
+        run: |
+          if [ -f pnpm-lock.yaml ] && [ ! -f package-lock.json ]; then
+            npx --yes pnpm@11.25.0 install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          fi
+      - name: Execute project-specific isolated tests
+        run: |
+          node --test tests/application-security.test.mjs
