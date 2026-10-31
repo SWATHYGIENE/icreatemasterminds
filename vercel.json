@@ -68,5 +68,12 @@
       "source": "/circles/:path*",
       "destination": "https://agrarianexchange.com/circles/:path*"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/agents",
+      "destination": "https://agrarianexchange.com/agents?agent=community",
+      "permanent": false
+    }
   ]
 }
